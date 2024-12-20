@@ -1,5 +1,4 @@
 # Code-of-Echinococcus-granulosus-sensu-stricto-population-study
-title of article: Whole-genomic comparison reveals complex population dynamics and parasitic adaptation of Echinococcus granulosus sensu stricto
 
 ##Annotating VCF Files with SnpEff v4.3
 #1. Modify the Configuration File. The configuration file that needs to be modified is located in the snpEff directory and is named snpEff.config. Open this file and add your custom database information on the last line.

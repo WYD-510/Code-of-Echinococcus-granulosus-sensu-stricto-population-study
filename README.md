@@ -259,7 +259,7 @@ $ruby plot_f4ratio.rb geneflow_BBAA.txt plot_order.txt 0.2 geneflow_BBAA_f4ratio
 #Draw Figure S16.
 python3 ./Dsuite/Dsuite/utils/dtools.py geneflow_tree_Fbranch.txt tree_replaced.nwk
 
-##Analyses historical effective population size using SMC++ v1.15.2.
+##Analyze historical effective population size using SMC++ v1.15.2.
 #Convert VCF to the SMC++ input format with vcf2smc:
 for popid in `awk '{print $2}' id2loc.tsv | sort | uniq`
 do

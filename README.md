@@ -259,6 +259,28 @@ $ruby plot_f4ratio.rb geneflow_BBAA.txt plot_order.txt 0.2 geneflow_BBAA_f4ratio
 #Draw Figure S16.
 python3 ./Dsuite/Dsuite/utils/dtools.py geneflow_tree_Fbranch.txt tree_replaced.nwk
 
+##Analyses historical effective population size using SMC++ v1.15.2.
+#Convert VCF to the SMC++ input format with vcf2smc:
+for popid in `awk '{print $2}' id2loc.tsv | sort | uniq`
+do
+cat chr2len_withchrid.tsv | while read -r chrid chr len
+do
+    echo $popid
+    poplist=`cat id2loc.tsv | grep $popid | awk '{printf $1","}' | sed 's/,$/\n/'`
+    popstr="${popid}:$poplist"
+
+    echo "smc++ vcf2smc $PWD/Eg_final_ChrOnly.vcf.gz  $PWD/data/${popid}.$chrid.smc.gz $chr --length $len $popstr" > vcf2smc_qsub/$popid.$chrid.vcf2smc.sh
+    qsub -clear -wd $PWD/vcf2smc_qsub -q pathogendb.q -l vf=16g,p=1 -binding linear:1 vcf2smc_qsub/$popid.$chrid.vcf2smc.sh
+done
+done
+#Inferred effective population size (Ne) over time for the three populations using subcommand cv in SMC++ with default 100bp window size.
+for popid in `awk '{print $2}' id2loc.tsv | sort | uniq`
+do
+    echo $popid
+    echo "smc++ cv -o $PWD/CV_output_rerun/${popid}_result 2.31e-9 $PWD/data/${popid}.*.smc.gz  --knots 18 --cores 48" > smcpp_cv_rerun_qsub/$popid.smcpp_cv.sh
+    qsub -clear -wd $PWD/smcpp_cv_rerun_qsub -q pathogendb.q -l vf=32g,p=48 -binding linear:24 smcpp_cv_rerun_qsub/$popid.smcpp_cv.sh
+done
+
 ##Calculate nSL and XP-nSL using Selscan v2.0.
 #XP-nSL between populations
 for k in  1 2 3 4 5 6 7 8 9;
